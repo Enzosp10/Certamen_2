@@ -16,6 +16,9 @@ public class Usuario {
         return Id;
     }
 
+    public Usuario() {
+    }
+
     public void setId(String id) {
         Id = id;
     }

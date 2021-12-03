@@ -4,12 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         btn_ingresar = findViewById(R.id.btn_ingresar);
         EditText etUsuario= findViewById(R.id.etUsuario);
         EditText etPassword= findViewById(R.id.etPassword);
+
         inicializarFirebase();
 
 
@@ -43,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
         btn_ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent btn_ingresar = new Intent(MainActivity.this,MainActivity2.class);
-                startActivity(btn_ingresar);
+
                 databaseReference.child("usuario").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -58,17 +60,25 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
 
+
                     }
                 });
                 if (ListUsuario.isEmpty()){
-                    // no hay usuario base de datos
+
+                    Snackbar mySnackbar = Snackbar.make(view, "Ingrese Usuario y Contraseña",Snackbar.LENGTH_LONG);
+                    mySnackbar.show();
+
                 }
                 else{
-                   if (ListUsuario.get(0).getNombre().equals(etUsuario) && ListUsuario.get(0).getContraseña().equals(etPassword)){
+                   if (ListUsuario.get(0).getNombre().equals(etUsuario.getText().toString()) && ListUsuario.get(0).getContraseña().equals(etPassword.getText().toString())){
+
+                       Intent btn_ingresar = new Intent(MainActivity.this,MainActivity2.class);
+                       startActivity(btn_ingresar);
                        // pasa login
                    }
                    else {
-                       // no pasa login
+                       Snackbar mySnackbar = Snackbar.make(view, "Usuario o contraseña incorrecta",Snackbar.LENGTH_LONG);
+                       mySnackbar.show();
                    }
 
                 }
@@ -82,6 +92,7 @@ public class MainActivity extends AppCompatActivity {
         firebaseDataBase=FirebaseDatabase.getInstance();
         databaseReference= firebaseDataBase.getReference();
     }
+
 
 
 }
